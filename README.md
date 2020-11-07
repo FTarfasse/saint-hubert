@@ -6,15 +6,19 @@ http -h GET https://github.com/bananananaaefaefZGTAHZHnanananana | grep 'status:
 ```
 
 Algorythm big steps:
-- [ ] GET request on the page
-- [ ] retrieve all "http" / "https" / 'http' / 'https'
-- [ ] add them on data structure
-- [ ] for each key element of the data structure
+- [x] GET request on the page
+- [x] Check if any link on the page
+- [ ] retrieve all href content (http, https)
+- [ ] Create slice
+- For each href create struct with link as key
+- [ ] For each key element of the data structure
   - [ ] GET request
-  - [ ] add value to key the HTTP code status
-- [ ] Display as table all adresses and the corresponding HTTP status
+  - [ ] Retrieve HTTP status code
+  - [ ] add HTTP code status to value of each key
+- [ ] Display struct in CLI
 
 Future features to have:
-- [ ] CLI UI (with colors !),
-- [ ] Arg to display only errors,
+- [ ] Nice CLI UI (with colors !),
+- [ ] Arg to display only broken links,
 - [ ] Give location of file to make HTTP GET calls
+- [ ] Parse a website given a root hook (example.com => retrieve all routes based on hrefs)

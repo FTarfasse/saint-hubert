@@ -6,10 +6,7 @@ func Validate(s string) bool {
 	if len(s) == 0 {
 		return false
 	}
-	if strings.Contains(s, "href=\"http://") {
-		return true
-	}
-	if strings.Contains(s, "href=\"https://") {
+	if strings.Contains(s, "href=\"http://") || strings.Contains(s, "href=\"https://") {
 		return true
 	}
 

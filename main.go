@@ -1,9 +1,11 @@
 package main
 
 import (
-	get "./get"
+	"fmt"
 )
 
 func main() {
-	get.Get("http://example.com")
+	// get.Get("http://example.com")
+	a := "abc"
+	fmt.Println(a[1:2])
 }
