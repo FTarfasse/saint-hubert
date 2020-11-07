@@ -1,10 +1,10 @@
-package parse
+package collect
 
 import (
 	"testing"
 )
 
-func TestParse(t *testing.T) {
+func TestCollect(t *testing.T) {
 
 	assertCorrectMessage := func(t *testing.T, got, want string) {
 		t.Helper()
@@ -14,13 +14,13 @@ func TestParse(t *testing.T) {
 	}
 
 	t.Run("Valid string with no link gives alert message", func(t *testing.T) {
-		got := Parse("<body><a>YOLO</a></body>")
+		got := Collect("<body><a>YOLO</a></body>")
 		want := "No links at this address !"
 		assertCorrectMessage(t, got, want)
 	})
 
 	t.Run("Valid string with one link gives one link", func(t *testing.T) {
-		got := Parse("aefaefef<a href=\"https://example.com\"></a>")
+		got := Collect("aefaefef<a href=\"https://example.com\"></a>")
 		want := "https://perdu.com"
 		assertCorrectMessage(t, got, want)
 	})

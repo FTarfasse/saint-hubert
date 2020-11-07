@@ -1,11 +1,15 @@
 package main
 
 import (
+	get "./get"
 	"fmt"
 )
 
 func main() {
-	// get.Get("http://example.com")
-	a := "abc"
-	fmt.Println(a[1:2])
+	res := get.Retrieve("http://example.com")
+	// fmt.Println(res.Address)
+	// fmt.Println(res.Status)
+	a := res.Address
+	s := res.Status
+	fmt.Printf("Link: %q | status: %q", a, s)
 }
