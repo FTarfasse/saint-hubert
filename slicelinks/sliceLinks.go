@@ -3,6 +3,7 @@ package slice
 import (
 	index "../index"
 	valid "../validate"
+	"fmt"
 )
 
 func SliceLinks(s string) (links []string) {
@@ -22,6 +23,10 @@ func SliceLinks(s string) (links []string) {
 		sliced = s[end:]
 		links = append(links, link)
 		s = sliced
+	}
+
+	if len(links) == 0 {
+		fmt.Println("No links at this address")
 	}
 
 	return

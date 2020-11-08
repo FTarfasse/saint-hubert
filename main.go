@@ -2,21 +2,17 @@ package main
 
 import (
 	c "./collect"
-	"fmt"
+	d "./cli"
 )
 
-const url = "http://example.com"
+// const url = "http://example.com"
+// const url = "http://perdu.com"
+const url = "https://fr.wikipedia.org/wiki/Rebelles_(film,_2019)"
 
 func main() {
-	//res := get.Retrieve("http://example.com")
-	//// fmt.Println(res.Address)
-	//// fmt.Println(res.Status)
-	//a := res.Address
-	//s := res.Status
-	//fmt.Printf("Link: %q | status: %q", a, s)
 	datas := c.Collect(url)
-
-	for _, data := range datas {
-		fmt.Printf("Link: %q | status: %q", data.Address, data.Status)
-	}
+	d.DisplayCli(datas)
+//	for _, data := range datas {
+//		fmt.Printf("Link: %q | status: %q", data.Address, data.Status)
+//	}
 }
