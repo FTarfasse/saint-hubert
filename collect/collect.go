@@ -1,16 +1,38 @@
 package collect
 
 import (
-	slice "../slice"
-	validate "../validate"
+	request "../request"
+	slice "../slicelinks"
+	"io/ioutil"
+	"log"
 )
 
-func Collect(s string) string {
-	if validate.Validate(s) == false {
-		return "No links at this address !"
+type Result struct {
+	Address string
+	Status  string
+}
+
+var datas []Result
+
+func Collect(url string) []Result {
+
+	r := request.Retrieve(url)
+	rb, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		log.Fatalln(err)
 	}
 
-	links := slice.Slice(s)
+	b := string(rb)
 
-	return ""
+	links := slice.SliceLinks(b)
+
+	for _, link := range links {
+		resp := request.Retrieve(link)
+		status := resp.Status
+		result := Result{Address: link, Status: status}
+		datas = append(datas, result)
+	}
+
+	return datas
 }

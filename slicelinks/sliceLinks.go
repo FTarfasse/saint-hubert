@@ -5,7 +5,7 @@ import (
 	valid "../validate"
 )
 
-func Slice(s string) (links []string) {
+func SliceLinks(s string) (links []string) {
 
 	// for init_part; condition_part; post_part {
 	// 	...
