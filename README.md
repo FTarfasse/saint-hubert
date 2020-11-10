@@ -3,19 +3,20 @@ Sniff broken links on web pages
 
 ```
 http -h GET https://github.com/bananananaaefaefZGTAHZHnanananana | grep 'status:' | sed 's/.*://' 
-```
+go build -o <desired name for binaries>```
 
 Algorythm big steps:
 - [x] GET request on the page
 - [x] Check if any link on the page
-- [ ] retrieve all href content (http, https)
-- [ ] Create slice
+- [x] retrieve all href content (http, https)
+- [x] Create slice
 - For each href create struct with link as key
-- [ ] For each key element of the data structure
-  - [ ] GET request
-  - [ ] Retrieve HTTP status code
-  - [ ] add HTTP code status to value of each key
-- [ ] Display struct in CLI
+- [x] For each key element of the data structure
+  - [x] GET request
+  - [x] Retrieve HTTP status code
+  - [x] add HTTP code status to value of each key
+  - [ ] Remove duplicates from array
+- [x] Display struct in CLI
 
 Future features to have:
 - [ ] Nice CLI UI (with colors !),
