@@ -16,9 +16,9 @@ type Result struct {
 
 //const ErrNoLinksFound = errors.New("No links at this address !")
 
-var datas []Result
+//var datas []Result
 
-func Collect(url string) []Result {
+func Collect(url string) (datas []Result, err error) {
 
 	r := request.Retrieve(url)
 	rb, err := ioutil.ReadAll(r.Body)
@@ -27,7 +27,10 @@ func Collect(url string) []Result {
 	}
 
 	b := string(rb)
-	links := slice.SliceLinks(b)
+	links, err := slice.SliceLinks(b)
+	if err != nil {
+		panic(err)
+	}
 
 	for _, link := range links {
 		resp := request.Retrieve(link)
@@ -37,7 +40,7 @@ func Collect(url string) []Result {
 		datas = append(datas, result)
 	}
 
-	return datas
+	return datas, err
 }
 
 func Squeeze(array []Result) []Result {
@@ -48,7 +51,7 @@ func Squeeze(array []Result) []Result {
 		for i := 0; i < length; i++ {
 			_, times := Count(array[i:], array[i].Address)
 			if times == 1 {
-				squeezed =append(squeezed, array[i])
+				squeezed = append(squeezed, array[i])
 			}
 		}
 	}

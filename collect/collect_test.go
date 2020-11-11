@@ -1,6 +1,7 @@
 package collect
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -26,7 +27,7 @@ func TestCollect(t *testing.T) {
 	//})
 
 	t.Run("Valid string with one link gives one link", func(t *testing.T) {
-		got := Collect("https://example.com")
+		got, _ := Collect("https://example.com")
 		want := "https://www.iana.org/domains/example"
 		assertCorrectMessage(t, got[0].Address, want)
 	})
@@ -65,10 +66,28 @@ func TestCollect(t *testing.T) {
 			},
 
 		}
+		expected := []Result{
+			{
+				Address: "example.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+			{
+				Address: "yolo.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+
+		}
 		squeezed := Squeeze(ex)
 		got := len(squeezed)
-		want := 2
+		want := len(expected)
 		assertEquals(t, got, want)
+		if !reflect.DeepEqual(squeezed, expected) {
+				t.Errorf("got %v want %v", squeezed, expected)
+		}
 	})
 
 	t.Run("CheckDoubloons gives false if array has element address more than once", func(t *testing.T) {
