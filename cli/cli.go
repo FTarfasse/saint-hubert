@@ -2,29 +2,27 @@ package cli
 
 import (
 	c "../collect"
+	"fmt"
 	"strconv"
 )
 
 const (
-	//PS1 = "\\[\\033[COLORm\\]"
 	Message  = "Link: %s | status: %s "
-	Prefix   = "\\033["
-	DotPoint = ";"
-	Sufix    = "m"
 
 	Reset = 0
-	// Bold = 1
+	Bold  = 1
 	// Underline = 4
+	//                  reset / color number / message
+	ColorFormat = "\033[%v;%vm%s\033[0m"
 
-	Black = 30
-	Red   = 31
-	// Green  = 32
-	GreenOutput = "\033[0;32m%s\033[0m"
-	Yellow      = 33
-	Blue        = 34
-	Purple      = 35
-	Cyan        = 36
-	White       = 37
+	Black  = 30
+	Red    = 31
+	Green  = 32
+	Yellow = 33
+	Blue   = 34
+	Purple = 35
+	Cyan   = 36
+	White  = 37
 
 	BlackBackground  = 40
 	RedBackground    = 41
@@ -75,11 +73,6 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 	return sizes
 }
 
-// func Maxer(array [][]) []int {
-// 	rand := []int{0, 1}
-// 	return rand
-// }
-
 //func DisplayCli(datas []c.Result) {
 //	fmt.Printf("\n\tSAINT-HUBERT FOUND THIS AT: %s\n\n", datas[0].Source)
 //	for _, data := range datas {
@@ -90,7 +83,7 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 //}
 //
 //func printWithColors(message string, link string, status string) {
-//	fmt.Sprintf("Link: %s | status: %s", link, status)
+//	fmt.Sprintf(ColorFormat, Reset, "Link: %s | status: %s", link, status)
 //}
 //
 //func formColor(status string, color int) string {
@@ -102,3 +95,30 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 //func statusColor(){
 //	if
 //}
+
+//func PrintLine(){
+//
+//}
+
+func ColorOutput(data []c.Result) []c.Result {
+
+	for i := 0; i < len(data); i++ {
+		if data[i].Code < 199 {
+			data[i].Status = fmt.Sprintf(ColorFormat, Reset, White, data[i].Status)
+		}
+		if data[i].Code < 299 {
+			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Green, data[i].Status)
+		}
+		if data[i].Code < 399 {
+			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Yellow, data[i].Status)
+		}
+		if data[i].Code < 499 {
+			data[i].Status = fmt.Sprintf(ColorFormat, Bold, Red, data[i].Status)
+		}
+		if data[i].Code < 599 {
+			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Cyan, data[i].Status)
+		}
+	}
+
+	return data
+}
