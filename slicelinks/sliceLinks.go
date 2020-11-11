@@ -3,10 +3,12 @@ package slice
 import (
 	index "../index"
 	valid "../validate"
-	"fmt"
+	"errors"
 )
 
-func SliceLinks(s string) (links []string) {
+var ErrNoLinksFound = errors.New("No links in this source !")
+
+func SliceLinks(s string) (links []string, err error) {
 
 	// for init_part; condition_part; post_part {
 	// 	...
@@ -26,7 +28,7 @@ func SliceLinks(s string) (links []string) {
 	}
 
 	if len(links) == 0 {
-		fmt.Println("No links at this address")
+		return links, ErrNoLinksFound
 	}
 
 	return
