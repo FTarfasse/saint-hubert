@@ -2,7 +2,7 @@ package cli
 
 import (
 	c "../collect"
-	"reflect"
+	"strconv"
 )
 
 const (
@@ -36,9 +36,43 @@ const (
 	WhiteBackground  = 47
 )
 
-//func Columns(r c.Result) (sizes []int) {
-func Columns(r c.Result) (c [][]int) {
-	return c
+func ColumnsSizes(results []c.Result) (sizes []int) {
+
+	if len(results) == 0 {
+		panic("Can't calculate columns sizes on an empty array !")
+	}
+
+	// init at results[0]
+	maxAddress := len(results[0].Address)
+	maxStatus := len(results[0].Status)
+	maxCode := len(strconv.Itoa(results[0].Code))
+	maxSource := len(results[0].Source)
+
+	if len(results) > 1 {
+
+		for i := 1; i < len(results); i++ {
+			if maxAddress < len(results[i].Address) {
+				maxAddress = len(results[i].Address)
+			}
+			if maxStatus < len(results[i].Status) {
+				maxStatus = len(results[i].Status)
+			}
+			if maxCode < len(strconv.Itoa(results[i].Code)) {
+				maxCode = len(strconv.Itoa(results[i].Code))
+			}
+			if maxSource < len(results[i].Source) {
+				maxSource = len(results[i].Source)
+			}
+		}
+
+	}
+
+	sizes = append(sizes, maxAddress)
+	sizes = append(sizes, maxStatus)
+	sizes = append(sizes, maxCode)
+	sizes = append(sizes, maxSource)
+
+	return sizes
 }
 
 // func Maxer(array [][]) []int {
