@@ -41,36 +41,33 @@ func Collect(url string) []Result {
 }
 
 func Squeeze(array []Result) []Result {
-	var newArr []Result
+	var squeezed []Result
+	length := len(array)
 
 	if CheckDoubloons(array) == true {
-
-		for i := 0; i < len(array); i++ {
-			_, times := AddressPresentOnce(array, array[i].Address)
-			if times > 1 {
-				array = append(array[:i], array[i+1:]...) // remove from array
-			}
+		for i := 0; i < length; i++ {
+			_, times := Count(array[i:], array[i].Address)
 			if times == 1 {
-				newArr = append(newArr, array[i]) // add to squeezed array
+				squeezed =append(squeezed, array[i])
 			}
 		}
-
 	}
 
-	return array
+	return squeezed
 }
 
 func CheckDoubloons(arr []Result) bool {
 	for _, a := range arr {
-		_, count := AddressPresentOnce(arr, a.Address)
-		for count != 1 {
+		_, count := Count(arr, a.Address)
+		if count != 1 {
 			return true
 		}
 	}
+
 	return false
 }
 
-func AddressPresentOnce(res []Result, search string) (bool, int) {
+func Count(res []Result, search string) (bool, int) {
 	r := len(res)
 	count := 0
 	for i := 0; i < r; i++ {
@@ -78,5 +75,6 @@ func AddressPresentOnce(res []Result, search string) (bool, int) {
 			count++
 		}
 	}
+
 	return count == 1, count
 }

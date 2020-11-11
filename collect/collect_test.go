@@ -40,7 +40,7 @@ func TestCollect(t *testing.T) {
 				Source:  "none",
 			},
 			{
-				Address: "example.com",
+				Address: "yolo.com",
 				Status:  "404 NOT FOUND",
 				Code:    404,
 				Source:  "none",
@@ -51,10 +51,23 @@ func TestCollect(t *testing.T) {
 				Code:    404,
 				Source:  "none",
 			},
+			{
+				Address: "yolo.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+			{
+				Address: "yolo.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+
 		}
 		squeezed := Squeeze(ex)
 		got := len(squeezed)
-		want := 1
+		want := 2
 		assertEquals(t, got, want)
 	})
 
@@ -82,50 +95,38 @@ func TestCollect(t *testing.T) {
 		}
 	})
 
-	t.Run("AddressPresentOnce gives true if element is present once", func(t *testing.T) {
+	t.Run("Count gives true if element is present once", func(t *testing.T) {
 		var fix []Result
 		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
 		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
 		fix = append(fix, Result{Address: "paf", Status: "", Code: 0, Source: ""})
-		got, _ := AddressPresentOnce(fix, fix[0].Address)
+		got, _ := Count(fix, fix[0].Address)
 		want := true
 		if got != want {
 			t.Errorf("got %t want %t", got, want)
 		}
 	})
 
-	t.Run("AddressPresentOnce gives false if element is present MORE than once", func(t *testing.T) {
+	t.Run("Count gives false if element is present MORE than once", func(t *testing.T) {
 		var fix []Result
 		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
 		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
 		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		got, _ := AddressPresentOnce(fix, fix[0].Address)
+		got, _ := Count(fix, fix[0].Address)
 		want := false
 		if got != want {
 			t.Errorf("got %t want %t", got, want)
 		}
 	})
 
-	t.Run("AddressPresentOnce also gives the number of times the doubloon is present", func(t *testing.T) {
+	t.Run("Count also gives the number of times the doubloon is present", func(t *testing.T) {
 		var fix []Result
 		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
 		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
 		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		_, got := AddressPresentOnce(fix, fix[0].Address)
+		_, got := Count(fix, fix[0].Address)
 		want := 2
 		assertEquals(t, got, want)
-	})
-
-	t.Run("AddressPresentOnce gives true if element is present once", func(t *testing.T) {
-		var fix []Result
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "bananas", Status: "", Code: 0, Source: ""})
-		got, _ := AddressPresentOnce(fix, fix[0].Address)
-		want := true
-		if got != want {
-			t.Errorf("got %t want %t", got, want)
-		}
 	})
 
 }
