@@ -51,31 +51,43 @@ func TestColumnsSizes(t *testing.T) {
 //	})
 //}
 
-//func TestPrintLine(t *testing.T) {
-//	t.Run("", func(t *testing.T) {
+//func TestBuildTable(t *testing.T) {
+//	t.Run("\nTable build properly", func(t *testing.T) {
 //		datas := []c.Result{
 //			{
-//				Address: "abcde",
-//				Status:  "200 OK",
+//				Address: "abc",
+//				Status:  "OK",
 //				Code:    200,
 //				Source:  "example.com",
 //			},
-//			{
-//				Address: "a",
-//				Status:  "a",
-//				Code:    1,
-//				Source:  "Kittycat",
-//			},
-//			{
-//				Address: "a2",
-//				Status:  "abc",
-//				Code:    12,
-//				Source:  "Kit",
-//			},
 //		}
-//		sizes := []int{5, 6, 3, 11}
+//		maxs := []int{5, 6, 3, 11}
+//		got := BuildTable(ColorOutput(datas), maxs)
+//		want := []string{
+//			"| Link  | Status |",
+//			"| abc   | OK     |",
+//		}
+//		if got != want {
+//			t.Error("\n Got: %s\n Want: %s\n")
+//		}
 //	})
 //}
+
+func TestBuildLine(t *testing.T) {
+	t.Run("\nBuild line properly", func(t *testing.T) {
+
+		msg := []string{"abc", "OK"}
+		sizes := []int{
+			5,
+			6,
+		}
+		got := BuildLine(msg, Separator, sizes)
+		want := "| abc   | OK     |"
+		if got != want {
+			t.Errorf("\n Got:  %s\n Want: %s\n", got, want)
+		}
+	})
+}
 
 func TestColorOutput(t *testing.T) {
 	data := []c.Result{

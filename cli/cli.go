@@ -4,10 +4,15 @@ import (
 	c "../collect"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 const (
 	Message  = "Link: %s | status: %s "
+	Separator = "|"
+	Space = " "
+	Link = "Link"
+	Status = "Status"
 
 	Reset = 0
 	Bold  = 1
@@ -81,24 +86,45 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 //		fmt.Printf(" \033[1;32m%s\033[0m \n", data.Status)
 //	}
 //}
-//
-//func printWithColors(message string, link string, status string) {
-//	fmt.Sprintf(ColorFormat, Reset, "Link: %s | status: %s", link, status)
-//}
-//
-//func formColor(status string, color int) string {
-//	// \033[
-//	return Prefix + strconv.Itoa(Reset) + DotPoint + strconv.Itoa(color) + Sufix + status
-//}
 
-//
-//func statusColor(){
-//	if
-//}
+func BuildTable(coloredData []c.Result, sizes []int)(formattedData []string){
+	//"| Link  | Status |"
+	//for _, r := range coloredData {
+	//	// separator + Space "| abcde | 200 OK |"
+	//	r.Address sizes[0]
+	//	r.Status sizes[1]
+	//}
 
-//func PrintLine(){
-//
-//}
+	return formattedData
+}
+
+func BuildLine(msg [] string , separator string, size []int) (output string){
+	//
+	builder := strings.Builder{}
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[0])
+
+	for i := 0; i < (size[0] - len(msg[0])); i++ {
+		builder.WriteString(Space)
+	}
+
+	builder.WriteString(Space)
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[1])
+
+	for k := 0; k < (size[1] - len(msg[1])); k++ {
+		builder.WriteString(Space)
+	}
+
+	builder.WriteString(Space)
+	builder.WriteString(separator)
+
+	output = builder.String()
+
+	return output
+}
 
 func ColorOutput(data []c.Result) []c.Result {
 
