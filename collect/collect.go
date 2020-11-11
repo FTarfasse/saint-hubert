@@ -14,6 +14,8 @@ type Result struct {
 	Source  string
 }
 
+//const ErrNoLinksFound = errors.New("No links at this address !")
+
 var datas []Result
 
 func Collect(url string) []Result {
@@ -38,26 +40,37 @@ func Collect(url string) []Result {
 	return datas
 }
 
-// func removeDuplicate(array []Result, i int) {
-//
-// 	// Remove the element at i i from a.
-// 	copy(array[i:], array[i+1:]) // Shift a[i+1:] left one i.
-// 	array[len(array)-1] = ""     // Erase last element (write zero value).
-// 	array = array[:len(array)-1] // Truncate slice.
-//
-// 	//fmt.Println(a) // [A B D E]
-// }
-//
-// func findDuplicate(res []Result, i int) bool {
-// 	for k := 0; r := range res; k++ {
-// 		if res[r].Address == val {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
+func Squeeze(array []Result) []Result {
+	var newArr []Result
 
-func Find(res []Result, search string) bool {
+	if CheckDoubloons(array) == true {
+
+		for i := 0; i < len(array); i++ {
+			_, times := AddressPresentOnce(array, array[i].Address)
+			if times > 1 {
+				array = append(array[:i], array[i+1:]...) // remove from array
+			}
+			if times == 1 {
+				newArr = append(newArr, array[i]) // add to squeezed array
+			}
+		}
+
+	}
+
+	return array
+}
+
+func CheckDoubloons(arr []Result) bool {
+	for _, a := range arr {
+		_, count := AddressPresentOnce(arr, a.Address)
+		for count != 1 {
+			return true
+		}
+	}
+	return false
+}
+
+func AddressPresentOnce(res []Result, search string) (bool, int) {
 	r := len(res)
 	count := 0
 	for i := 0; i < r; i++ {
@@ -65,6 +78,5 @@ func Find(res []Result, search string) bool {
 			count++
 		}
 	}
-
-	return count != 1
+	return count == 1, count
 }
