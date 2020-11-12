@@ -1,7 +1,8 @@
 package cli
 
 import (
-	c "../collect"
+	c "../../collect"
+	//"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -37,52 +38,56 @@ func TestColumnsSizes(t *testing.T) {
 	})
 }
 
-//func TestPrintTableLine(t *testing.T) {
-//	t.Run("CliFormat should prepare header column size ", func(t *testing.T) {
-//		link := "Link"
-//		status := "Status"
-//		sizes := CliFormat(4, 5, link, status)
-//		got := " _________\n|" + link + "" | ____ | ____ |\n
-//		"
-//		want := []int{2, 4}
-//		if got != want {
-//			t.Errorf("got %v want %v", got, want)
-//		}
-//	})
-//}
+func TestBuildTable(t *testing.T) {
+	t.Run("\nTable build properly", func(t *testing.T) {
+		datas := []c.Result{
+			{
+				Address: "abc",
+				Status:  "OK",
+				Code:    200,
+				Source:  "example.com",
+			},
+		}
+		maxs := []int{10, 10}
+		got := BuildTable(ColorOutput(datas), maxs)
+		want := []string{
+			"| Link       | Status     |\n",
+			"| abc        | \u001B[0;32mOK\u001B[0m         |\n",
+		}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("\nGOT\n  %v \nWANT\n %v", got, want)
+		}
+	})
+}
 
-//func TestBuildTable(t *testing.T) {
-//	t.Run("\nTable build properly", func(t *testing.T) {
-//		datas := []c.Result{
-//			{
-//				Address: "abc",
-//				Status:  "OK",
-//				Code:    200,
-//				Source:  "example.com",
-//			},
-//		}
-//		maxs := []int{5, 6, 3, 11}
-//		got := BuildTable(ColorOutput(datas), maxs)
-//		want := []string{
-//			"| Link  | Status |",
-//			"| abc   | OK     |",
-//		}
-//		if got != want {
-//			t.Error("\n Got: %s\n Want: %s\n")
-//		}
-//	})
-//}
+func TestBuildHeader(t *testing.T) {
+	t.Run("\nBuild line properly", func(t *testing.T) {
+
+		msg := []string{"Link", "Status"}
+		sizes := []int{
+			10,
+			10,
+		}
+		got := BuildHeader(msg, Separator, sizes)
+		want := "| Link       | Status     |"
+		if got != want {
+			t.Errorf("\n Got:  %s\n Want: %s\n", got, want)
+		}
+	})
+}
 
 func TestBuildLine(t *testing.T) {
 	t.Run("\nBuild line properly", func(t *testing.T) {
 
-		msg := []string{"abc", "OK"}
+		msg := []string{"abc", "\u001B[0;32mOK\u001B[0m"}
+		//fmt.Printf("\nREAL LENGTH: %v\n", len(msg[1]))
 		sizes := []int{
-			5,
-			6,
+			10,
+			10,
 		}
+
 		got := BuildLine(msg, Separator, sizes)
-		want := "| abc   | OK     |"
+		want := "| abc        | \u001B[0;32mOK\u001B[0m         |"
 		if got != want {
 			t.Errorf("\n Got:  %s\n Want: %s\n", got, want)
 		}
@@ -105,23 +110,6 @@ func TestColorOutput(t *testing.T) {
 		},
 	}
 	got := ColorOutput(data)
-	//want := []c.Result{
-	//	{
-	//		Address: "abcde",
-	//		Status:  "\033[0;32m200 OK\033[0m",
-	//		Code:    200,
-	//		Source:  "example.com",
-	//	},
-	//	{
-	//		Address: "a",
-	//		Status:  "\033[1;31m404 NOT FOUND\033[0m",
-	//		Code:    404,
-	//		Source:  "Kittycat",
-	//	},
-	//}
-	//if !reflect.DeepEqual(got, want) {
-	//	t.Errorf("\ngot  %v \nwant %v", got, want)
-	//}
 	if strings.Contains(got[0].Status, "\033[0;32m200 OK\033[0m") == false {
 		t.Error("Not properly formatted")
 	}

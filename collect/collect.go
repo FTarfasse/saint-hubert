@@ -25,8 +25,8 @@ func Collect(url string) (datas []Result, err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	b := string(rb)
+
 	links, err := slice.SliceLinks(b)
 	if err != nil {
 		panic(err)
