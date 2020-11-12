@@ -19,7 +19,7 @@ Algorythm big steps:
 - [x] Display struct in CLI
 
 Future features to have:
-- [ ] Nice CLI UI (with colors !),
-- [ ] Arg to display only broken links,
+- [x] Nice CLI UI (with colors !),
+- [ ] Arg to display all links,
 - [ ] Give location of file to make HTTP GET calls
 - [ ] Parse a website given a root hook (example.com => retrieve all routes based on hrefs)

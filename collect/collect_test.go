@@ -81,7 +81,7 @@ func TestCollect(t *testing.T) {
 			},
 
 		}
-		squeezed := Squeeze(ex)
+		squeezed := Squeeze(ex, false)
 		got := len(squeezed)
 		want := len(expected)
 		assertEquals(t, got, want)

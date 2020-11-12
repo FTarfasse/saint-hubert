@@ -43,7 +43,7 @@ func Collect(url string) (datas []Result, err error) {
 	return datas, err
 }
 
-func Squeeze(array []Result) []Result {
+func Squeeze(array []Result, issuesOnly bool) []Result {
 	var squeezed []Result
 	length := len(array)
 
@@ -54,6 +54,18 @@ func Squeeze(array []Result) []Result {
 				squeezed = append(squeezed, array[i])
 			}
 		}
+	}
+
+	if issuesOnly == true {
+		var onlyIssues []Result
+		for j := 0; j < len(squeezed); j++ {
+			if squeezed[j].Code > 199 && squeezed[j].Code < 300 {
+				// NOTHING
+			} else {
+				onlyIssues = append(onlyIssues, squeezed[j])
+			}
+		}
+		return onlyIssues
 	}
 
 	return squeezed

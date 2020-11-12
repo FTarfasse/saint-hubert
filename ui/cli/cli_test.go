@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"github.com/acarl005/stripansi"
 )
 
 func TestColumnsSizes(t *testing.T) {
@@ -54,9 +55,18 @@ func TestBuildTable(t *testing.T) {
 			"| Link       | Status     |\n",
 			"| abc        | \u001B[0;32mOK\u001B[0m         |\n",
 		}
+		for i := 0; i < 2; i++ {
+			got[i] = stripansi.Strip(got[i])
+			want[i] = stripansi.Strip(want[i])
+		}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("\nGOT\n  %v \nWANT\n %v", got, want)
 		}
+		//got := len(stripansi.Strip(gotDatas[1]))
+		//want := len(stripansi.Strip(wantDatas[1]))
+		//if got != want {
+		//	t.Errorf("\nGOT\n  %v \nWANT\n %v", got, want)
+		//}
 	})
 }
 

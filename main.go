@@ -7,7 +7,6 @@ import (
 )
 
 //const url = "http://example.com"
-//
 //const url = "http://perdu.com"
 const url = "https://github.com/saint-hubert"
 
@@ -16,8 +15,10 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	datas = c.Squeeze(datas)
+	datas = c.Squeeze(datas, true)
 	//fmt.Printf("Datas: %s", datas)
+
+	//go r.Start()
 
 	//CLI
 	cli.DisplayCli(datas)
