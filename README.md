@@ -15,11 +15,14 @@ Algorythm big steps:
   - [x] GET request
   - [x] Retrieve HTTP status code
   - [x] add HTTP code status to value of each key
-  - [ ] Remove duplicates from array
+  - [x] Remove duplicates from array
 - [x] Display struct in CLI
 
 Future features to have:
 - [x] Nice CLI UI (with colors !),
-- [ ] Arg to display all links,
-- [ ] Give location of file to make HTTP GET calls
+- [x] Arg to display only issues
+ links,
+- [ ] Manage launching binary with different options
+- [ ] Give Json back
+- [ ] Give location of file to make parsing
 - [ ] Parse a website given a root hook (example.com => retrieve all routes based on hrefs)

@@ -5,6 +5,7 @@ import (
 	slice "../slicelinks"
 	"io/ioutil"
 	"log"
+	"errors"
 )
 
 type Result struct {
@@ -14,9 +15,7 @@ type Result struct {
 	Source  string
 }
 
-//const ErrNoLinksFound = errors.New("No links at this address !")
-
-//var datas []Result
+var ErrNoLinksFound = errors.New("No links at this address !")
 
 func Collect(url string) (datas []Result, err error) {
 
@@ -25,11 +24,11 @@ func Collect(url string) (datas []Result, err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	b := string(rb)
 
-	links, err := slice.SliceLinks(b)
+	//b := string(rb)
+	links, err := slice.SliceLinks(string(rb))
 	if err != nil {
-		panic(err)
+		return datas, ErrNoLinksFound
 	}
 
 	for _, link := range links {
@@ -43,32 +42,53 @@ func Collect(url string) (datas []Result, err error) {
 	return datas, err
 }
 
-func Squeeze(array []Result, issuesOnly bool) []Result {
+func Squeeze(array []Result, issuesOnly bool) (datas []Result) {
 	var squeezed []Result
-	length := len(array)
+	doubles := CheckDoubloons(array)
 
-	if CheckDoubloons(array) == true {
-		for i := 0; i < length; i++ {
+
+	if doubles == false && issuesOnly == false {
+		return array
+	}
+
+	if doubles == true && issuesOnly == false {
+		for i := 0; i < len(array); i++ {
 			_, times := Count(array[i:], array[i].Address)
 			if times == 1 {
 				squeezed = append(squeezed, array[i])
 			}
 		}
+		return squeezed
 	}
 
-	if issuesOnly == true {
-		var onlyIssues []Result
-		for j := 0; j < len(squeezed); j++ {
-			if squeezed[j].Code > 199 && squeezed[j].Code < 300 {
+	if doubles == false && issuesOnly == true {
+		onlyIssues := make([]Result,0)
+		var x int
+		for j := 0; j < len(array); j++ {
+			//fmt.Printf("\n \033[0;31m%v\033[0m\n", array[x])
+			if array[j].Code > 199 && array[j].Code < 300 {
 				// NOTHING
 			} else {
-				onlyIssues = append(onlyIssues, squeezed[j])
+				onlyIssues = append(onlyIssues, array[x])
+				x++
 			}
 		}
 		return onlyIssues
 	}
 
-	return squeezed
+	if doubles == true && issuesOnly == true {
+		var fullFiltering []Result
+		for k := 0; k < len(squeezed); k++ {
+			if squeezed[k].Code > 199 && squeezed[k].Code < 300 {
+				// NOTHING
+			} else {
+				fullFiltering = append(fullFiltering, squeezed[k])
+			}
+		}
+		return fullFiltering
+	}
+
+	return
 }
 
 func CheckDoubloons(arr []Result) bool {

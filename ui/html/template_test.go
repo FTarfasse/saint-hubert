@@ -1,7 +1,19 @@
 package html
 
-import c "../../collect"
+import "testing"
 
-func HomeTemplate([]c.Result) (html[]string) {
-	return
+func TestHomeTemplate(t *testing.T) {
+
+	t.Run("Form proper html standard document", func(t *testing.T) {
+
+	})
+	t.Run("Form headers table", func(t *testing.T) {
+
+	})
+	t.Run("Form line table", func(t *testing.T) {
+
+	})
+	t.Run("Form image item", func(t *testing.T) {
+
+	})
 }

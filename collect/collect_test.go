@@ -20,11 +20,12 @@ func TestCollect(t *testing.T) {
 		}
 	}
 
-	//t.Run("Valid string with no link gives alert message", func(t *testing.T) {
-	//	got := Collect("http://perdu.com")
-	//	want := "No links at this address !"
-	//	assertCorrectMessage(t, got, want)
-	//})
+	t.Run("Valid string with no link gives alert message", func(t *testing.T) {
+		_, err := Collect("http://perdu.com")
+		want := "No links at this address !"
+		got := err.Error()
+		assertCorrectMessage(t, got, want)
+	})
 
 	t.Run("Valid string with one link gives one link", func(t *testing.T) {
 		got, _ := Collect("https://example.com")
@@ -64,7 +65,6 @@ func TestCollect(t *testing.T) {
 				Code:    404,
 				Source:  "none",
 			},
-
 		}
 		expected := []Result{
 			{
@@ -79,14 +79,69 @@ func TestCollect(t *testing.T) {
 				Code:    404,
 				Source:  "none",
 			},
-
 		}
 		squeezed := Squeeze(ex, false)
 		got := len(squeezed)
 		want := len(expected)
 		assertEquals(t, got, want)
 		if !reflect.DeepEqual(squeezed, expected) {
-				t.Errorf("got %v want %v", squeezed, expected)
+			t.Errorf("got %v want %v", squeezed, expected)
+		}
+	})
+
+	t.Run("Squeeze with arg false gives all", func(t *testing.T) {
+		ex := []Result{
+			{
+				Address: "yolo.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+			{
+				Address: "lalaland.com",
+				Status:  "200 OK",
+				Code:    200,
+				Source:  "none",
+			},
+		}
+		squeezed := Squeeze(ex, false)
+		got := len(squeezed)
+		want := 2
+		assertEquals(t, got, want)
+		if !reflect.DeepEqual(ex, squeezed) {
+			t.Errorf("got %v want %v", ex, squeezed)
+		}
+	})
+
+	t.Run("Squeeze with arg true gives only issues (non 200 HTTP codes", func(t *testing.T) {
+		ex := []Result{
+			{
+				Address: "yolo.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+			{
+				Address: "lalaland.com",
+				Status:  "200 OK",
+				Code:    200,
+				Source:  "none",
+			},
+		}
+		expected := []Result{
+			{
+				Address: "yolo.com",
+				Status:  "404 NOT FOUND",
+				Code:    404,
+				Source:  "none",
+			},
+		}
+		squeezed := Squeeze(ex, true)
+		got := squeezed
+		want := expected
+		// DEBUG fmt.Printf("\n \033[0;31m%v\033[0m\n", squeezed)
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v want %v", got, want)
 		}
 	})
 

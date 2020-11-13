@@ -62,11 +62,6 @@ func TestBuildTable(t *testing.T) {
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("\nGOT\n  %v \nWANT\n %v", got, want)
 		}
-		//got := len(stripansi.Strip(gotDatas[1]))
-		//want := len(stripansi.Strip(wantDatas[1]))
-		//if got != want {
-		//	t.Errorf("\nGOT\n  %v \nWANT\n %v", got, want)
-		//}
 	})
 }
 

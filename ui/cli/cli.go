@@ -9,18 +9,14 @@ import (
 )
 
 const (
-	Message   = "Link: %s | status: %s "
 	Separator = "|"
 	Space     = " "
 	BackLine  = "\n"
-	Link      = "Link"
-	Status    = "Status"
 
 	Reset = 0
 	Bold  = 1
-	// Underline = 4
-	//                  reset / color number / message
-	ColorFormat = "\033[%v;%vm%s\033[0m"
+	Underline = 4
+	ColorFormat = "\033[%v;%vm%s\033[0m" // reset / color number / message
 
 	Black  = 30
 	Red    = 31
@@ -52,7 +48,6 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 		panic("Can't calculate columns sizes on an empty array !")
 	}
 
-	// init at results[0]
 	maxAddress := len(results[0].Address)
 	maxStatus := len(results[0].Status)
 	maxCode := len(strconv.Itoa(results[0].Code))
@@ -91,21 +86,15 @@ func DisplayCli(datas []c.Result) {
 
 	fmt.Printf("\n\tSAINT-HUBERT FOUND THIS AT: %s\n\n", datas[0].Source)
 	fmt.Print(BuildTable(colouredData, maxs[:2]))
-	//for _, data := range datas {
-	//	// fmt.Printf(formColor("Test", 200))
-	//	//fmt.Printf(Message, data.Address, "OK")
-	//	//fmt.Printf(" \033[1;32m%s\033[0m \n", data.Status)
-	//}
 }
 
 func BuildTable(coloredData []c.Result, maxs []int) (formattedData []string) {
-	headerBuilder := strings.Builder{}                                   // init builder
-	headerBuilder.WriteString(BuildHeader(Headers, Separator, maxs[:2])) // create headers
-	headerBuilder.WriteString(BackLine)                                  // retour chariot
-	header := headerBuilder.String()                                     // to String()
-	formattedData = append(formattedData, header)                        // add to return array values
+	headerBuilder := strings.Builder{}
+	headerBuilder.WriteString(BuildHeader(Headers, Separator, maxs[:2]))
+	headerBuilder.WriteString(BackLine)
+	header := headerBuilder.String()
+	formattedData = append(formattedData, header)
 
-	//for c := 0; c < len(coloredData); c++ { //
 	for _, c := range coloredData { //
 		lineBuilder := strings.Builder{}
 		input := []string{
@@ -154,13 +143,10 @@ func BuildHeader(msg []string, separator string, size []int) (output string) {
 
 func BuildLine(msg []string, separator string, size []int) (output string) {
 
-	//fmt.Printf("\n BUILDLINE FUNCTION\nmsg[] : %s \n", msg)
-	//fmt.Printf("\n BUILDLINE FUNCTION\nmsg[0] : %s / %v \n", msg[0], len(msg[0]))
-	//fmt.Printf("\n BUILDLINE FUNCTION\nmsg[1] : %s / %v \n", msg[1], len(msg[1]))
 	builder := strings.Builder{}
-	builder.WriteString(separator) // "|"
-	builder.WriteString(Space)     // " "
-	builder.WriteString(msg[0])    // "abc"
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[0])
 
 	for i := 0; i < (size[0] - len(msg[0])); i++ {
 		builder.WriteString(Space)
@@ -170,15 +156,10 @@ func BuildLine(msg []string, separator string, size []int) (output string) {
 	builder.WriteString(separator)
 	builder.WriteString(Space)
 	builder.WriteString(msg[1])
-	//fmt.Printf("\nBefore loop: size %v  len(msg) %v\n", size[1], len(msg[1]))
-	//fmt.Printf("\nBefore loop: %s \n", builder.String())
-	//fmt.Printf("\nlen(msg[1]): %v\n", len(msg[1]))
 	escAnsiStr := stripansi.Strip(msg[1])
-	//fmt.Printf("\nSTRIPPED: %v\n", len(escAnsiStr))
+
 	for j := 0; j < (size[1] - len(escAnsiStr)); j++ {
-		//for j := 0; j < (size[1] + 11 - (len(msg[1]))); j++ {
 		builder.WriteString(Space)
-		//fmt.Print("\nSPACE\n")
 	}
 
 	builder.WriteString(Space)
