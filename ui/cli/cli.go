@@ -84,7 +84,7 @@ func DisplayCli(datas []c.Result) {
 	maxs := ColumnsSizes(datas)
 	colouredData := ColorOutput(datas)
 
-	fmt.Printf("\n\tSAINT-HUBERT FOUND THIS AT: %s\n\n", datas[0].Source)
+	fmt.Printf("\033[1;45m%s\033[0m", fmt.Sprintf("\n SAINT-HUBERT FOUND THIS AT: %s \n\n", datas[0].Source))
 	fmt.Print(BuildTable(colouredData, maxs[:2]))
 }
 

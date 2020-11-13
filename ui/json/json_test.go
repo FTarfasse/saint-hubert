@@ -1,9 +1,10 @@
 package json
 
 import (
-	errors "golang.org/x/xerrors"
-	"testing"
 	c "../../collect"
+	errors "golang.org/x/xerrors"
+	"strings"
+	"testing"
 )
 
 func TestJsonify(t *testing.T) {
@@ -15,24 +16,39 @@ func TestJsonify(t *testing.T) {
 				Code:    200,
 				Source:  "http://example.com",
 			},
-			//{
-			//	Address: "a",
-			//	Status:  "a",
-			//	Code:    1,
-			//	Source:  "Kittycat",
-			//},
-			//{
-			//	Address: "a2",
-			//	Status:  "abc",
-			//	Code:    12,
-			//	Source:  "Kit",
-			//},
 		}
-		b, _ := Jsonify(datas)
-		got := string(b)
-		want := "{index: 0, content: {\n\t\t\t\tAddress: \"https://www.iana.org/domains/example\",\n\t\t\t\tStatus:  \"200 OK\",\n\t\t\t\tCode:    200,\n\t\t\t\tSource:  \"http://example.com\",\n\t\t\t}}"
-		if got != want {
-			errors.Errorf("")
+		got, _ := Jsonify(datas)
+		want := "{\n  Address: \"https://www.iana.org/domains/example\",\n  Status:  \"200 OK\",\n  Code:    200,\n  Source:  \"http://example.com\",\n}"
+		if strings.Compare(got, want) != 0 {
+			errors.Errorf("Got %s want %s", got, want)
 		}
 	})
+
+	//t.Run("Jsonify jsonifies multiple lines !!!", func(t *testing.T) {
+	//	datas := []c.Result{
+	//		{
+	//			Address: "https://www.iana.org/domains/example",
+	//			Status:  "200 OK",
+	//			Code:    200,
+	//			Source:  "http://example.com",
+	//		},
+	//		{
+	//			Address: "a",
+	//			Status:  "a",
+	//			Code:    1,
+	//			Source:  "Kittycat",
+	//		},
+	//		{
+	//			Address: "a2",
+	//			Status:  "abc",
+	//			Code:    12,
+	//			Source:  "Kit",
+	//		},
+	//	}
+	//	got, _ := Jsonify(datas)
+	//	want := ""
+	//	if got != want {
+	//		errors.Errorf("")
+	//	}
+	//})
 }

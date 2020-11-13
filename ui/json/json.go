@@ -1,9 +1,10 @@
 package json
 
 import (
-	encode "encoding/json"
 	c "../../collect"
 	"errors"
+	encode "encoding/json"
+	"fmt"
 )
 
 type JsonResult struct {
@@ -13,19 +14,13 @@ type JsonResult struct {
 
 var ErrJsonifying = errors.New("Could not jsonify !")
 
-func Jsonify(data []c.Result) (string, error) {
-	formattedData := JsonResult{}
-	for i := 0; i < len(data); i++ {
-		formattedData.index = i
-		formattedData.content = data[i]
-	}
-
-	bytes, err := encode.Marshal(formattedData)
+func Jsonify(data []c.Result) (s string, err error) {
+	bytes, err := encode.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return string(bytes), ErrJsonifying
 	}
 
-	j := string(bytes)
+	s = string(bytes)
 
-	return j, err
+	return s, err
 }
