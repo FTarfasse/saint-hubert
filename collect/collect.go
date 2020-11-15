@@ -1,11 +1,11 @@
 package collect
 
 import (
-	request "../request"
+	"../request"
 	slice "../slicelinks"
+	"errors"
 	"io/ioutil"
 	"log"
-	"errors"
 )
 
 type Result struct {
@@ -19,20 +19,19 @@ var ErrNoLinksFound = errors.New("No links at this address !")
 
 func Collect(url string) (datas []Result, err error) {
 
-	r := request.Retrieve(url)
+	r := request.GetHtml(url)
 	rb, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	//b := string(rb)
 	links, err := slice.SliceLinks(string(rb))
 	if err != nil {
 		return datas, ErrNoLinksFound
 	}
 
 	for _, link := range links {
-		resp := request.Retrieve(link)
+		resp := request.GetHtml(link)
 		status := resp.Status
 		code := resp.StatusCode
 		result := Result{Address: link, Status: status, Code: code, Source: url}
@@ -45,7 +44,6 @@ func Collect(url string) (datas []Result, err error) {
 func Squeeze(array []Result, issuesOnly bool) (datas []Result) {
 	var squeezed []Result
 	doubles := CheckDoubloons(array)
-
 
 	if doubles == false && issuesOnly == false {
 		return array
@@ -62,10 +60,9 @@ func Squeeze(array []Result, issuesOnly bool) (datas []Result) {
 	}
 
 	if doubles == false && issuesOnly == true {
-		onlyIssues := make([]Result,0)
+		onlyIssues := make([]Result, 0)
 		var x int
 		for j := 0; j < len(array); j++ {
-			//fmt.Printf("\n \033[0;31m%v\033[0m\n", array[x])
 			if array[j].Code > 199 && array[j].Code < 300 {
 				// NOTHING
 			} else {
@@ -78,14 +75,23 @@ func Squeeze(array []Result, issuesOnly bool) (datas []Result) {
 
 	if doubles == true && issuesOnly == true {
 		var fullFiltering []Result
-		for k := 0; k < len(squeezed); k++ {
-			if squeezed[k].Code > 199 && squeezed[k].Code < 300 {
-				// NOTHING
-			} else {
-				fullFiltering = append(fullFiltering, squeezed[k])
+		var fullTreat []Result
+		// squeeze first
+		for b := 0; b < len(array); b++ {
+			_, times := Count(array[b:], array[b].Address)
+			if times == 1 {
+				fullFiltering = append(fullFiltering, array[b])
 			}
 		}
-		return fullFiltering
+
+		for k := 0; k < len(fullFiltering); k++ {
+			if fullFiltering[k].Code > 199 && fullFiltering[k].Code < 300 {
+				// NOTHING
+			} else {
+				fullTreat = append(fullTreat, fullFiltering[k])
+			}
+		}
+		return fullTreat
 	}
 
 	return

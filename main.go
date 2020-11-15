@@ -2,25 +2,29 @@ package main
 
 import (
 	c "./collect"
-	errors "golang.org/x/xerrors"
-	"os"
-	"time"
-	//cli "./ui/cli"
-	json "./ui/json"
-	"fmt"
-	//exec "os/exec"
-	//"os"
+	cli "./ui/cli"
+	file "./ui/file"
 	"log"
+	"os"
+	exec "os/exec"
 )
 
 const url = "http://example.com"
+
+var ToFile bool
+
 //const url = "http://perdu.com"
 //const url = "https://github.com/saint-hubert"
 
+//--help
+//--save
+//--serve
+//--all
+
 func init() {
-	//c := exec.Command("clear")
-	//c.Stdout = os.Stdout
-	//c.Run()
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
 
 func main() {
@@ -28,30 +32,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	//fmt.Printf("\n \033[0;31m%v\033[0m\n", os.Args[1:])
 	datas = c.Squeeze(datas, false)
 
+	if ToFile {
+		file.SaveToFile(datas)
+	}
+
 	//CLI
-	//cli.DisplayCli(datas)
-
-	// JSON
-	j, err := json.Jsonify(datas)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	// FILE HANDLING
-	fileName := fmt.Sprintf("%s_%v.json", "json_", time.Now().String())
-	file, err := os.Create(fileName)
-	if err != nil {
-		errors.Errorf("Couldn't create file: %s", err)
-	}
-
-	defer file.Close()
-
-	_, err = file.WriteString(j)
-	if err != nil {
-		errors.Errorf("Couldn't write to file: %s", err)
-	}
-
-	fmt.Printf("Datas : %s", j)
+	cli.DisplayCli(datas)
 }

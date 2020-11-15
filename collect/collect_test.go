@@ -127,6 +127,12 @@ func TestCollect(t *testing.T) {
 				Code:    200,
 				Source:  "none",
 			},
+			{
+				Address: "lalaland.com",
+				Status:  "200 OK",
+				Code:    200,
+				Source:  "none",
+			},
 		}
 		expected := []Result{
 			{
