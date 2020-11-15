@@ -1,3 +1,4 @@
+// file package has the helper function for generating the output to a file
 package file
 
 import (
@@ -9,6 +10,8 @@ import (
 	json "../json"
 )
 
+// SaveToFile transforms the content to JSON format and saves it to a file the function just created in the current
+//directory of the program
 func SaveToFile(content []c.Result) {
 
 	data, err := json.Jsonify(content)

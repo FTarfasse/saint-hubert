@@ -1,3 +1,4 @@
+// cli package prepares the ui output for the terminal
 package cli
 
 import (
@@ -17,6 +18,8 @@ const (
 	Bold  = 1
 	Underline = 4
 	ColorFormat = "\033[%v;%vm%s\033[0m" // reset / color number / message
+	TopFormat = "\033[1;45m%s\033[0m"
+	AppHeader = "\n SAINT-HUBERT FOUND THIS AT: %s \n\n"
 
 	Black  = 30
 	Red    = 31
@@ -42,6 +45,100 @@ var Headers = []string{
 	"Status",
 }
 
+// DisplayCli is the central function of the package which generates the oupt to terminal
+func DisplayCli(datas []c.Result) {
+	maxs := ColumnsSizes(datas)
+	colouredData := ColorOutput(datas)
+	fmt.Printf(TopFormat, fmt.Sprintf(AppHeader, datas[0].Source))
+	fmt.Print(BuildTable(colouredData, maxs[:2]))
+}
+
+// BuildTable builds the header and every line of the report
+func BuildTable(coloredData []c.Result, maxs []int) (formattedData []string) {
+	headerBuilder := strings.Builder{}
+	headerBuilder.WriteString(BuildHeader(Headers, Separator, maxs[:2]))
+	headerBuilder.WriteString(BackLine)
+	header := headerBuilder.String()
+	formattedData = append(formattedData, header)
+
+	for _, c := range coloredData { //
+		lineBuilder := strings.Builder{}
+		input := []string{
+			c.Address,
+			c.Status,
+		}
+
+		v := BuildLine(input, Separator, maxs[:2])
+		lineBuilder.WriteString(v)
+
+		lineBuilder.WriteString(BackLine)
+		line := lineBuilder.String()
+
+		formattedData = append(formattedData, line)
+	}
+
+	return formattedData
+}
+
+// BuildHeader generates the headers with the proper sizes
+func BuildHeader(msg []string, separator string, size []int) (output string) {
+	builder := strings.Builder{}
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[0])
+
+	for i := 0; i < (size[0] - len(msg[0])); i++ {
+		builder.WriteString(Space)
+	}
+
+	builder.WriteString(Space)
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[1])
+
+	for j := 0; j < (size[1] - len(msg[1])); j++ {
+		builder.WriteString(Space)
+	}
+
+	builder.WriteString(Space)
+	builder.WriteString(separator)
+
+	output = builder.String()
+
+	return output
+}
+
+// BuildLine generates a line with the proper sizes
+func BuildLine(msg []string, separator string, size []int) (output string) {
+
+	builder := strings.Builder{}
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[0])
+
+	for i := 0; i < (size[0] - len(msg[0])); i++ {
+		builder.WriteString(Space)
+	}
+
+	builder.WriteString(Space)
+	builder.WriteString(separator)
+	builder.WriteString(Space)
+	builder.WriteString(msg[1])
+	escAnsiStr := stripansi.Strip(msg[1])
+
+	for j := 0; j < (size[1] - len(escAnsiStr)); j++ {
+		builder.WriteString(Space)
+	}
+
+	builder.WriteString(Space)
+	builder.WriteString(separator)
+
+	output = builder.String()
+
+	return output
+}
+
+// ColumnsSizes is the helper function to calculate the proper size of the columns
 func ColumnsSizes(results []c.Result) (sizes []int) {
 
 	if len(results) == 0 {
@@ -80,96 +177,7 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 	return sizes
 }
 
-func DisplayCli(datas []c.Result) {
-	maxs := ColumnsSizes(datas)
-	colouredData := ColorOutput(datas)
-
-	fmt.Printf("\033[1;45m%s\033[0m", fmt.Sprintf("\n SAINT-HUBERT FOUND THIS AT: %s \n\n", datas[0].Source))
-	fmt.Print(BuildTable(colouredData, maxs[:2]))
-}
-
-func BuildTable(coloredData []c.Result, maxs []int) (formattedData []string) {
-	headerBuilder := strings.Builder{}
-	headerBuilder.WriteString(BuildHeader(Headers, Separator, maxs[:2]))
-	headerBuilder.WriteString(BackLine)
-	header := headerBuilder.String()
-	formattedData = append(formattedData, header)
-
-	for _, c := range coloredData { //
-		lineBuilder := strings.Builder{}
-		input := []string{
-			c.Address,
-			c.Status,
-		}
-
-		v := BuildLine(input, Separator, maxs[:2])
-		lineBuilder.WriteString(v)
-
-		lineBuilder.WriteString(BackLine)
-		line := lineBuilder.String()
-
-		formattedData = append(formattedData, line)
-	}
-
-	return formattedData
-}
-
-func BuildHeader(msg []string, separator string, size []int) (output string) {
-	builder := strings.Builder{}
-	builder.WriteString(separator)
-	builder.WriteString(Space)
-	builder.WriteString(msg[0])
-
-	for i := 0; i < (size[0] - len(msg[0])); i++ {
-		builder.WriteString(Space)
-	}
-
-	builder.WriteString(Space)
-	builder.WriteString(separator)
-	builder.WriteString(Space)
-	builder.WriteString(msg[1])
-
-	for j := 0; j < (size[1] - len(msg[1])); j++ {
-		builder.WriteString(Space)
-	}
-
-	builder.WriteString(Space)
-	builder.WriteString(separator)
-
-	output = builder.String()
-
-	return output
-}
-
-func BuildLine(msg []string, separator string, size []int) (output string) {
-
-	builder := strings.Builder{}
-	builder.WriteString(separator)
-	builder.WriteString(Space)
-	builder.WriteString(msg[0])
-
-	for i := 0; i < (size[0] - len(msg[0])); i++ {
-		builder.WriteString(Space)
-	}
-
-	builder.WriteString(Space)
-	builder.WriteString(separator)
-	builder.WriteString(Space)
-	builder.WriteString(msg[1])
-	escAnsiStr := stripansi.Strip(msg[1])
-
-	for j := 0; j < (size[1] - len(escAnsiStr)); j++ {
-		builder.WriteString(Space)
-	}
-
-	builder.WriteString(Space)
-	builder.WriteString(separator)
-
-	output = builder.String()
-
-	return output
-}
-
+// ColorOutput sets a color on the HTTP code (red for 4XX code, green for 2XX code etc ...)
 func ColorOutput(data []c.Result) []c.Result {
 
 	for i := 0; i < len(data); i++ {

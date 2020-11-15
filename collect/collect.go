@@ -1,11 +1,13 @@
+// collect package includes the functions to process the HTML string into an exploitable input
 package collect
 
 import (
-	"../request"
+	//"../request"
 	slice "../slicelinks"
 	"errors"
 	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 type Result struct {
@@ -17,9 +19,14 @@ type Result struct {
 
 var ErrNoLinksFound = errors.New("No links at this address !")
 
+// Collect executes the initial HTTP call to retrieve the full HTML string, extract the links and executes the calls to
+// each one
 func Collect(url string) (datas []Result, err error) {
 
-	r := request.GetHtml(url)
+	r, err := http.Get(url)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	rb, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatalln(err)
@@ -31,7 +38,10 @@ func Collect(url string) (datas []Result, err error) {
 	}
 
 	for _, link := range links {
-		resp := request.GetHtml(link)
+		resp, err := http.Get(link)
+		if err != nil {
+			log.Fatalln(err)
+		}
 		status := resp.Status
 		code := resp.StatusCode
 		result := Result{Address: link, Status: status, Code: code, Source: url}
@@ -41,6 +51,7 @@ func Collect(url string) (datas []Result, err error) {
 	return datas, err
 }
 
+// this function removes duplicate links from the array of Result struct
 func Squeeze(array []Result, issuesOnly bool) (datas []Result) {
 	var squeezed []Result
 	doubles := CheckDoubloons(array)
@@ -97,6 +108,7 @@ func Squeeze(array []Result, issuesOnly bool) (datas []Result) {
 	return
 }
 
+// this function checks if the current array has any duplicate link (Result.Address value)
 func CheckDoubloons(arr []Result) bool {
 	for _, a := range arr {
 		_, count := Count(arr, a.Address)
@@ -108,6 +120,7 @@ func CheckDoubloons(arr []Result) bool {
 	return false
 }
 
+// checks the number of occurrences of the link (Result.Address value)
 func Count(res []Result, search string) (bool, int) {
 	r := len(res)
 	count := 0

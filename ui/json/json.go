@@ -4,16 +4,11 @@ import (
 	c "../../collect"
 	"errors"
 	encode "encoding/json"
-	//"fmt"
 )
-
-type JsonResult struct {
-	index   int
-	content c.Result
-}
 
 var ErrJsonifying = errors.New("Could not jsonify !")
 
+// Jsonify converts the array of Result into JSON string
 func Jsonify(data []c.Result) (s string, err error) {
 	bytes, err := encode.MarshalIndent(data, "", "  ")
 	if err != nil {
