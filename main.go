@@ -9,8 +9,9 @@ import (
 	exec "os/exec"
 )
 
-const url = "http://example.com"
-
+//const url = "http://example.com"
+//const url = "https://quii.gitbook.io/learn-go-with-tests/go-fundamentals/mocking"
+const url = "https://blog.cleancoder.com/uncle-bob/2014/05/10/WhenToMock.html"
 var ToFile bool
 
 //const url = "http://perdu.com"
