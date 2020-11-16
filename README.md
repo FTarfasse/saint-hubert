@@ -8,7 +8,7 @@ Project roadmap:
 - [x] Check if any link on the page
 - [x] retrieve all href content (http, https)
 - [x] Create slice
-- For each href create struct with link as key
+- [x] For each href create struct with link as key
 - [x] For each key element of the data structure
   - [x] GET request
   - [x] Retrieve HTTP status code

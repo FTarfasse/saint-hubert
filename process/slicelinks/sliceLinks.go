@@ -9,7 +9,6 @@ import (
 var ErrNoLinksFound = errors.New("No links in this source !")
 
 func SliceLinks(s string) (links []string, err error) {
-
 	var sliced string
 
 	for valid.Validate(s) {

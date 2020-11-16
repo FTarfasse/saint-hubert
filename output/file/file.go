@@ -2,7 +2,7 @@
 package file
 
 import (
-	c "../../collect"
+	c "../../process/types"
 	"fmt"
 	errors "golang.org/x/xerrors"
 	"time"
@@ -13,13 +13,14 @@ import (
 // SaveToFile transforms the content to JSON format and saves it to a file the function just created in the current
 //directory of the program
 func SaveToFile(content []c.Result) {
+	fileName := fmt.Sprintf("%s%v.json", "report_", time.Now().String())
 
 	data, err := json.Jsonify(content)
 	if err != nil {
 		errors.Errorf("Couldn't generate Json for file: %s", err)
 	}
 
-	fileName := fmt.Sprintf("%s%v.json", "report_", time.Now().String())
+
 	file, err := os.Create(fileName)
 	if err != nil {
 		errors.Errorf("Couldn't create file: %s", err)

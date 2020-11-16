@@ -2,9 +2,7 @@
 package html
 
 import (
-	c "../../collect"
-	"html"
-	"html/template"
+	c "../../process/types"
 )
 
 func HomeTemplate([]c.Result) (html []string) {

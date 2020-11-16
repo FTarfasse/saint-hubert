@@ -2,7 +2,7 @@
 package cli
 
 import (
-	c "../../collect"
+	c "../../process/types"
 	"fmt"
 	"strconv"
 	"strings"
@@ -110,7 +110,6 @@ func BuildHeader(msg []string, separator string, size []int) (output string) {
 
 // BuildLine generates a line with the proper sizes
 func BuildLine(msg []string, separator string, size []int) (output string) {
-
 	builder := strings.Builder{}
 	builder.WriteString(separator)
 	builder.WriteString(Space)
@@ -140,7 +139,6 @@ func BuildLine(msg []string, separator string, size []int) (output string) {
 
 // ColumnsSizes is the helper function to calculate the proper size of the columns
 func ColumnsSizes(results []c.Result) (sizes []int) {
-
 	if len(results) == 0 {
 		panic("Can't calculate columns sizes on an empty array !")
 	}
@@ -179,22 +177,20 @@ func ColumnsSizes(results []c.Result) (sizes []int) {
 
 // ColorOutput sets a color on the HTTP code (red for 4XX code, green for 2XX code etc ...)
 func ColorOutput(data []c.Result) []c.Result {
-
 	for i := 0; i < len(data); i++ {
-		if data[i].Code < 199 {
+		switch {
+		case data[i].Code < 199:
 			data[i].Status = fmt.Sprintf(ColorFormat, Reset, White, data[i].Status)
-		}
-		if data[i].Code < 299 {
+		case data[i].Code < 299:
 			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Green, data[i].Status)
-		}
-		if data[i].Code < 399 {
+		case data[i].Code < 399:
 			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Yellow, data[i].Status)
-		}
-		if data[i].Code < 499 {
-			data[i].Status = fmt.Sprintf(ColorFormat, Bold, Red, data[i].Status)
-		}
-		if data[i].Code < 599 {
+		case data[i].Code < 499:
+			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Red, data[i].Status)
+		case data[i].Code < 599:
 			data[i].Status = fmt.Sprintf(ColorFormat, Reset, Cyan, data[i].Status)
+		default:
+			data[i].Status = fmt.Sprintf(ColorFormat, Reset, RedBackground, "Unknown")
 		}
 	}
 

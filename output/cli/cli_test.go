@@ -1,7 +1,7 @@
 package cli
 
 import (
-	c "../../collect"
+	c "../../process/types"
 	//"fmt"
 	"reflect"
 	"strings"

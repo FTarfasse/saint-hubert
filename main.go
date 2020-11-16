@@ -1,21 +1,19 @@
 package main
 
 import (
-	c "./collect"
-	cli "./ui/cli"
-	file "./ui/file"
+	c "./process/collect"
+	cli "./output/cli"
+	file "./output/file"
 	"log"
 	"os"
 	exec "os/exec"
 )
 
 //const url = "http://example.com"
-//const url = "https://quii.gitbook.io/learn-go-with-tests/go-fundamentals/mocking"
-const url = "https://blog.cleancoder.com/uncle-bob/2014/05/10/WhenToMock.html"
 var ToFile bool
 
 //const url = "http://perdu.com"
-//const url = "https://github.com/saint-hubert"
+const url = "https://github.com/saint-hubert"
 
 //--help
 //--save
@@ -34,7 +32,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	//fmt.Printf("\n \033[0;31m%v\033[0m\n", os.Args[1:])
-	datas = c.Squeeze(datas, false)
+	datas = c.Squeeze(datas, true)
 
 	if ToFile {
 		file.SaveToFile(datas)

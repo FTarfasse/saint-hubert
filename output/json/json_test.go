@@ -1,7 +1,7 @@
 package json
 
 import (
-	c "../../collect"
+	c "../../process/types"
 	errors "golang.org/x/xerrors"
 	"strings"
 	"testing"
@@ -24,31 +24,31 @@ func TestJsonify(t *testing.T) {
 		}
 	})
 
-	//t.Run("Jsonify jsonifies multiple lines !!!", func(t *testing.T) {
-	//	datas := []c.Result{
-	//		{
-	//			Address: "https://www.iana.org/domains/example",
-	//			Status:  "200 OK",
-	//			Code:    200,
-	//			Source:  "http://example.com",
-	//		},
-	//		{
-	//			Address: "a",
-	//			Status:  "a",
-	//			Code:    1,
-	//			Source:  "Kittycat",
-	//		},
-	//		{
-	//			Address: "a2",
-	//			Status:  "abc",
-	//			Code:    12,
-	//			Source:  "Kit",
-	//		},
-	//	}
-	//	got, _ := Jsonify(datas)
-	//	want := ""
-	//	if got != want {
-	//		errors.Errorf("")
-	//	}
-	//})
+	t.Run("Jsonify jsonifies multiple lines !!!", func(t *testing.T) {
+		datas := []c.Result{
+			{
+				Address: "https://www.iana.org/domains/example",
+				Status:  "200 OK",
+				Code:    200,
+				Source:  "http://example.com",
+			},
+			{
+				Address: "a",
+				Status:  "a",
+				Code:    1,
+				Source:  "Kittycat",
+			},
+			{
+				Address: "a2",
+				Status:  "abc",
+				Code:    12,
+				Source:  "Kit",
+			},
+		}
+		got, _ := Jsonify(datas)
+		want := ""
+		if got != want {
+			errors.Errorf("")
+		}
+	})
 }

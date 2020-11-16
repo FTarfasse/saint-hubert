@@ -1,7 +1,7 @@
 package json
 
 import (
-	c "../../collect"
+	c "../../process/types"
 	"errors"
 	encode "encoding/json"
 )
