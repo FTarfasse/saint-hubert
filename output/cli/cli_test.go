@@ -1,17 +1,16 @@
 package cli
 
 import (
-	c "../../process/types"
-	//"fmt"
+	"../../process/types"
+	"github.com/acarl005/stripansi"
 	"reflect"
 	"strings"
 	"testing"
-	"github.com/acarl005/stripansi"
 )
 
 func TestColumnsSizes(t *testing.T) {
 	t.Run("Columns should give the length of each struct field", func(t *testing.T) {
-		datas := []c.Result{
+		datas := []types.Result{
 			{
 				Address: "abcde",
 				Status:  "200 OK",
@@ -41,7 +40,7 @@ func TestColumnsSizes(t *testing.T) {
 
 func TestBuildTable(t *testing.T) {
 	t.Run("\nTable build properly", func(t *testing.T) {
-		datas := []c.Result{
+		datas := []types.Result{
 			{
 				Address: "abc",
 				Status:  "OK",
@@ -100,7 +99,7 @@ func TestBuildLine(t *testing.T) {
 }
 
 func TestColorOutput(t *testing.T) {
-	data := []c.Result{
+	data := []types.Result{
 		{
 			Address: "abcde",
 			Status:  "200 OK",
@@ -114,11 +113,23 @@ func TestColorOutput(t *testing.T) {
 			Source:  "Kittycat",
 		},
 	}
+
 	got := ColorOutput(data)
-	if strings.Contains(got[0].Status, "\033[0;32m200 OK\033[0m") == false {
+
+	if len(got[0].Status) != len("\033[0;32m200 OK\033[0m") {
 		t.Error("Not properly formatted")
 	}
-	if strings.Contains(got[1].Status, "\033[1;31m404 NOT FOUND\033[0m") == false {
+	if !strings.Contains(got[0].Status, "200 OK") {
+		t.Error("OK 200 content corrupted")
+	}
+
+	if len(got[1].Status) != len("\033[1;31m404 NOT FOUND\033[0m") { // 30 - 6
+		//if strings.Contains(got[1].Status, "\033[1;31m404 NOT FOUND\033[0m") == false {
 		t.Error("Not properly formatted")
 	}
+
+	if !strings.Contains(got[1].Status, "404 NOT FOUND") {
+		t.Error("404 NOT FOUND content corrupted")
+	}
+
 }

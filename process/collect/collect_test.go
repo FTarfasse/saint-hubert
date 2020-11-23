@@ -3,6 +3,7 @@ package collect
 import (
 	"reflect"
 	"testing"
+	"../types"
 )
 
 func TestCollect(t *testing.T) {
@@ -33,8 +34,8 @@ func TestCollect(t *testing.T) {
 		assertCorrectMessage(t, got[0].Address, want)
 	})
 
-	t.Run("Squeeze erases duplicate links from []Result", func(t *testing.T) {
-		ex := []Result{
+	t.Run("Squeeze erases duplicate links from []types.Result", func(t *testing.T) {
+		ex := []types.Result{
 			{
 				Address: "example.com",
 				Status:  "404 NOT FOUND",
@@ -66,7 +67,7 @@ func TestCollect(t *testing.T) {
 				Source:  "none",
 			},
 		}
-		expected := []Result{
+		expected := []types.Result{
 			{
 				Address: "example.com",
 				Status:  "404 NOT FOUND",
@@ -90,7 +91,7 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("Squeeze with arg false gives all", func(t *testing.T) {
-		ex := []Result{
+		ex := []types.Result{
 			{
 				Address: "yolo.com",
 				Status:  "404 NOT FOUND",
@@ -114,7 +115,7 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("Squeeze with arg true gives only issues (non 200 HTTP codes", func(t *testing.T) {
-		ex := []Result{
+		ex := []types.Result{
 			{
 				Address: "yolo.com",
 				Status:  "404 NOT FOUND",
@@ -134,7 +135,7 @@ func TestCollect(t *testing.T) {
 				Source:  "none",
 			},
 		}
-		expected := []Result{
+		expected := []types.Result{
 			{
 				Address: "yolo.com",
 				Status:  "404 NOT FOUND",
@@ -152,10 +153,10 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("CheckDoubloons gives false if array has element address more than once", func(t *testing.T) {
-		var fix []Result
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "paf", Status: "", Code: 0, Source: ""})
+		var fix []types.Result
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouf", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "paf", Status: "", Code: 0, Source: ""})
 		got := CheckDoubloons(fix)
 		want := false
 		if got != want {
@@ -164,10 +165,10 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("CheckDoubloons gives true if array has element address more than once", func(t *testing.T) {
-		var fix []Result
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		var fix []types.Result
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouf", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
 		got := CheckDoubloons(fix)
 		want := true
 		if got != want {
@@ -176,10 +177,10 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("Count gives true if element is present once", func(t *testing.T) {
-		var fix []Result
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "paf", Status: "", Code: 0, Source: ""})
+		var fix []types.Result
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouf", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "paf", Status: "", Code: 0, Source: ""})
 		got, _ := Count(fix, fix[0].Address)
 		want := true
 		if got != want {
@@ -188,10 +189,10 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("Count gives false if element is present MORE than once", func(t *testing.T) {
-		var fix []Result
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		var fix []types.Result
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouf", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
 		got, _ := Count(fix, fix[0].Address)
 		want := false
 		if got != want {
@@ -200,10 +201,10 @@ func TestCollect(t *testing.T) {
 	})
 
 	t.Run("Count also gives the number of times the doubloon is present", func(t *testing.T) {
-		var fix []Result
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouf", Status: "", Code: 0, Source: ""})
-		fix = append(fix, Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		var fix []types.Result
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouf", Status: "", Code: 0, Source: ""})
+		fix = append(fix, types.Result{Address: "pouet", Status: "", Code: 0, Source: ""})
 		_, got := Count(fix, fix[0].Address)
 		want := 2
 		assertEquals(t, got, want)
