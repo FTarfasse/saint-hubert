@@ -4,18 +4,20 @@ package collect
 import (
 	//"../request"
 	slice "../slicelinks"
+	types "../types"
 	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
-	t "../types"
+	"sync"
 )
 
 var ErrNoLinksFound = errors.New("No links at this address !")
 
+// TODO: refactor into several functions
 // Collect executes the initial HTTP call to retrieve the full HTML string, extract the links and executes the calls to
 // each one
-func Collect(url string) (datas []t.Result, err error) {
+func Collect(url string) (datas []types.Result, err error) {
 	r, err := http.Get(url)
 	if err != nil {
 		log.Fatalln(err)
@@ -31,23 +33,38 @@ func Collect(url string) (datas []t.Result, err error) {
 		return datas, ErrNoLinksFound
 	}
 
+	var wg sync.WaitGroup
+	resultChannel := make(chan types.Result)
+
 	for _, link := range links {
-		resp, err := http.Get(link)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		status := resp.Status
-		code := resp.StatusCode
-		result := t.Result{Address: link, Status: status, Code: code, Source: url}
-		datas = append(datas, result)
+		wg.Add(1)
+		go func(l string, channel chan types.Result, wg *sync.WaitGroup) {
+			resp, err := http.Get(l)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			result := types.Result{Address: l, Status: resp.Status, Code: resp.StatusCode, Source: url}
+			channel <- result
+			wg.Done()
+		}(link, resultChannel, &wg)
+	}
+
+	go func() {
+		wg.Wait()
+		close(resultChannel)
+	}()
+
+	for res := range resultChannel {
+		datas = append(datas, res)
 	}
 
 	return datas, err
 }
 
 // this function removes duplicate links from the array of Result struct
-func Squeeze(array []t.Result, issuesOnly bool) (datas []t.Result) {
-	var squeezed []t.Result
+func Squeeze(array []types.Result, issuesOnly bool) (datas []types.Result) {
+	var squeezed []types.Result
 	doubles := CheckDoubloons(array)
 
 	if doubles == false && issuesOnly == false {
@@ -65,7 +82,7 @@ func Squeeze(array []t.Result, issuesOnly bool) (datas []t.Result) {
 	}
 
 	if doubles == false && issuesOnly == true {
-		onlyIssues := make([]t.Result, 0)
+		onlyIssues := make([]types.Result, 0)
 		var x int
 		for j := 0; j < len(array); j++ {
 			if array[j].Code > 199 && array[j].Code < 300 {
@@ -79,8 +96,8 @@ func Squeeze(array []t.Result, issuesOnly bool) (datas []t.Result) {
 	}
 
 	if doubles == true && issuesOnly == true {
-		var fullFiltering []t.Result
-		var fullTreat []t.Result
+		var fullFiltering []types.Result
+		var fullTreat []types.Result
 		// squeeze first
 		for b := 0; b < len(array); b++ {
 			_, times := Count(array[b:], array[b].Address)
@@ -103,7 +120,7 @@ func Squeeze(array []t.Result, issuesOnly bool) (datas []t.Result) {
 }
 
 // this function checks if the current array has any duplicate link (Result.Address value)
-func CheckDoubloons(arr []t.Result) bool {
+func CheckDoubloons(arr []types.Result) bool {
 	for _, a := range arr {
 		_, count := Count(arr, a.Address)
 		if count != 1 {
@@ -115,7 +132,7 @@ func CheckDoubloons(arr []t.Result) bool {
 }
 
 // checks the number of occurrences of the link (Result.Address value)
-func Count(res []t.Result, search string) (bool, int) {
+func Count(res []types.Result, search string) (bool, int) {
 	r := len(res)
 	count := 0
 	for i := 0; i < r; i++ {
