@@ -1,5 +1,7 @@
 ![alt text](http://www.clubdesbrunosetdesccs.org/wp-content/uploads/2020/09/bruno-saint-hubert-francais-photo-1024x1024-1-553x400.jpg)
-<br>#SAINT-HUBERT: Sniff the dead urls of your webpage from the terminal !
+<br>SAINT-HUBERT: Sniff the dead urls of your webpage from the terminal !
+ 
+ _Learning Golang one project at the time_
  
 ```go build -o sniff```
 
@@ -14,14 +16,17 @@ Project roadmap:
   - [x] Retrieve HTTP status code
   - [x] add HTTP code status to value of each key
   - [x] Remove duplicates from array
-- [x] Display struct in CLI
-- [x] Save output as JSON to file
+- [x] Display result in CLI
+- [x] Save output as JSON to file (when asked)
 
 Future features to have:
 - [x] Nice CLI UI (with colors !),
-- [x] Arg to display only issues
- links,
+- [x] Arg to display only issues,
+- [ ] Add statistics below headers (percentage of issues, number of links)
 - [ ] Add argument options
-- [x] Give Json back
 - [ ] Give location of file to make parsing
 - [ ] Parse a website given a root hook (example.com => retrieve all routes based on hrefs)
+
+Also:
+- [ ] Refactor
+- [ ] Add more tests to the existing tests

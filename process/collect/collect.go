@@ -39,13 +39,16 @@ func Collect(url string) (datas []types.Result, err error) {
 	for _, link := range links {
 		wg.Add(1)
 		go func(l string, channel chan types.Result, wg *sync.WaitGroup) {
+			// TODO: find better way to handle unreachable host
 			resp, err := http.Get(l)
 			if err != nil {
-				log.Fatalln(err)
+				result := types.Result{Address: l, Status: "Unreachable host", Code: 0, Source: url}
+				channel <- result
 			}
-
-			result := types.Result{Address: l, Status: resp.Status, Code: resp.StatusCode, Source: url}
-			channel <- result
+			if err == nil {
+				result := types.Result{Address: l, Status: resp.Status, Code: resp.StatusCode, Source: url}
+				channel <- result
+			}
 			wg.Done()
 		}(link, resultChannel, &wg)
 	}
